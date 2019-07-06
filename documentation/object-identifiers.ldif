@@ -1,0 +1,32 @@
+# Source: http://www.zytrax.com/books/ldap/apa/types.html
+dn: cn=syntaxOids,dc=wilbur,dc=space
+objectClass: olcSchemaConfig
+cn: syntaxOids
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.4 audioOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.5 binaryOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.6 bitStringOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.7 booleanOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.8 certificateOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.9 certificateListOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.10 certificatePairOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.11 countryStringOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.12 distinguishedNameOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.15 directoryStringOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.22 facsimileTelephoneNumberOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.24 generalizedTimeOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.26 ia5StringOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.27 integerOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.28 jpegOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.34 nameAndOptionalUIDOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.36 numericStringOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.38 objectIdentifierOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.39 otherMailboxOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.40 octetStringOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.41 postalAddressOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.44 printableStringOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.49 supportedAlgorithmOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.50 telephoneNumberOID
+olcObjectIdentifier: 1.3.6.1.4.1.1466.115.121.1.52 telexNumberOID
+olcObjectIdentifier: 1.3.6.1.1.1.0.0 nisNetgroupTripleOID
+olcObjectIdentifier: 1.3.6.1.1.1.0.1 rfc2307BootParameterOID
+olcObjectIdentifier: 1.2.826.0.1.3344810.7.1 serialNumberAndIssuerOID

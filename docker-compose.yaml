@@ -1,0 +1,41 @@
+version: '3.3'
+
+networks:
+  ldap:
+    external: false
+
+services:
+
+  ldap:
+    command: '--copy-service --loglevel none'
+    container_name: 'openldap'
+    environment:
+      LDAP_ORGANISATION: 'WilburSpace'
+      LDAP_DOMAIN: 'wilbur.space'
+      LDAP_ADMIN_PASSWORD: 'testeroni'
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: 'false'
+    hostname: 'ldaphost'
+    image: 'osixia/openldap'
+    networks:
+      - ldap
+    ports:
+      - '389:389'
+    # volumes:
+    #   - '$PWD/test/dist/1.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/10.ldif'
+
+  # Solely for the convenience of being able to inspect the directory with a
+  # graphical user interface.
+  ldapadmin:
+    container_name: 'phpldapadmin'
+    depends_on:
+      - ldap
+    environment:
+      PHPLDAPADMIN_HTTPS: 'false'
+      PHPLDAPADMIN_LDAP_HOSTS: 'ldap'
+      PHPLDAPADMIN_LDAP_CLIENT_TLS: 'false'
+    hostname: 'ldapadminhost'
+    image: 'osixia/phpldapadmin'
+    networks:
+      - ldap
+    ports:
+      - '8080:80'

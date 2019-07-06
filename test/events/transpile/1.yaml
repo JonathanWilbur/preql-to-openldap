@@ -1,0 +1,198 @@
+transpileTo: mariadb
+objects:
+  - apiVersion: preql/1.0.0
+    kind: CharacterSet
+    metadata:
+      name: utf8
+    spec:
+      name: utf8
+      targetEquivalents:
+        mariadb: utf8
+  - apiVersion: preql/1.0.0
+    kind: Collation
+    metadata:
+      name: utf8ci
+    spec:
+      name: utf8ci
+      targetEquivalents:
+        mariadb: utf8_general_ci
+  - apiVersion: preql/1.0.0
+    kind: Server
+    metadata:
+      name: templedb01
+    spec:
+      name: templedb01
+      protocol: mysql
+      hostname: templedb01
+      starttlsSupported: True
+      characterSet: utf8
+      collation: utf8ci
+  - apiVersion: preql/1.0.0
+    kind: DataType
+    metadata:
+      name: varchar
+    spec:
+      jsonEquivalent: string
+      regexes:
+        pcre:
+          personName:
+            - pattern: '^[A-Za-z ]+'
+            - pattern: '.{2,}'
+            - pattern: 'Phil Collins'
+              positive: False
+          robotName:
+            - pattern: '^[0-9]+'
+      setters:
+        - type: trim
+          side: both
+        # - type: substring
+        #   from: 3
+        #   to: 8
+      targets:
+        mariadb:
+          return: 'VARCHAR(%l)'
+          # returnBasedOnLength:
+          #   1: 'BOOLEAN'
+          #   8: 'VARCHAR(8)'
+          #   32: 'VARCHAR(32)'
+          # check:
+          #   - 'LENGTH(%a) <= %l'
+          # setters:
+          #   - 'UPPER(%a)'
+  - apiVersion: preql/1.0.0
+    kind: Database
+    metadata:
+      name: floofy
+    spec:
+      name: floofy
+      characterSet: utf8
+      collation: utf8ci
+  - apiVersion: preql/1.0.0
+    kind: Struct
+    metadata:
+      name: people
+      labels:
+        objectIdentifier: '1.2.10'
+    spec:
+      name: person
+      databaseName: floofy
+      characterSet: utf8
+      collation: utf8ci
+  - apiVersion: preql/1.0.0
+    kind: Struct
+    metadata:
+      name: pet
+      labels:
+        schema: dbo
+        table: pets
+        entity: pet
+        objectIdentifier: '1.2.9'
+      annotations:
+        comment: "A big ol dang table of pets"
+    spec:
+      name: pet
+      databaseName: floofy
+  - apiVersion: preql/1.0.0
+    kind: Attribute
+    metadata:
+      name: memberOfGroup
+      labels:
+        objectIdentifier: '1.2.3'
+    spec:
+      name: memberOfGroup
+      structName: person
+      databaseName: floofy
+      type: varchar
+      length: 64
+      nullable: True
+      multiValued: True
+  - apiVersion: preql/1.0.0
+    kind: Attribute
+    metadata:
+      name: ownerFirstName
+      labels:
+        objectIdentifier: '1.2.3'
+      annotations:
+        comment: "Should not be abbreviated"
+    spec:
+      name: ownerFirstName
+      structName: pet
+      databaseName: floofy
+      type: varchar
+      length: 64
+      nullable: False
+      default: Bob
+  - apiVersion: preql/1.0.0
+    kind: Attribute
+    metadata:
+      name: ownerLastName
+      labels:
+        objectIdentifier: '1.2.4'
+      annotations:
+        comment: "Should not be abbreviated"
+    spec:
+      name: ownerLastName
+      structName: pet
+      databaseName: floofy
+      type: varchar
+      length: 64
+      nullable: False
+      default: Bob
+      characterSet: utf8
+      collation: utf8ci
+  - apiVersion: preql/1.0.0
+    kind: Attribute
+    metadata:
+      name: firstName
+      labels:
+        objectIdentifier: '1.2.4'
+      annotations:
+        comment: "Should not be abbreviated"
+    spec:
+      name: firstName
+      structName: person
+      databaseName: floofy
+      type: varchar
+      length: 64
+      nullable: False
+      default: Bob
+  - apiVersion: preql/1.0.0
+    kind: Attribute
+    metadata:
+      name: lastName
+      labels:
+        objectIdentifier: '1.2.4'
+      annotations:
+        comment: "Should not be abbreviated"
+    spec:
+      name: lastName
+      structName: person
+      databaseName: floofy
+      type: varchar
+      length: 64
+      nullable: False
+      default: McGobb
+  - apiVersion: preql/1.0.0
+    kind: ForeignKey
+    metadata:
+      name: owner
+      labels:
+        objectIdentifier: '1.2.55'
+    spec:
+      databaseName: floofy
+      parentStruct: person
+      childStruct: pet
+      attributeName: owner
+      nullable: True
+  - apiVersion: preql/1.0.0
+    kind: Entry
+    metadata:
+      name: myself
+      labels:
+        name: biggay
+    spec:
+      databaseName: floofy
+      structName: person
+      values:
+        firstName: Jonathan
+        lastName: Wilbur
