@@ -35,7 +35,7 @@ objects:
       jsonEquivalent: string
       regexes:
         pcre:
-          personName:
+          personaName:
             - pattern: '^[A-Za-z ]+'
             - pattern: '.{2,}'
             - pattern: 'Phil Collins'
@@ -72,9 +72,9 @@ objects:
     metadata:
       name: people
       labels:
-        objectIdentifier: '1.2.10'
+        objectIdentifier: '1.2.75'
     spec:
-      name: person
+      name: persona
       databaseName: floofy
       characterSet: utf8
       collation: utf8ci
@@ -86,7 +86,7 @@ objects:
         schema: dbo
         table: pets
         entity: pet
-        objectIdentifier: '1.2.9'
+        objectIdentifier: '1.2.89'
       annotations:
         comment: "A big ol dang table of pets"
     spec:
@@ -97,10 +97,10 @@ objects:
     metadata:
       name: memberOfGroup
       labels:
-        objectIdentifier: '1.2.3'
+        objectIdentifier: '1.2.100'
     spec:
       name: memberOfGroup
-      structName: person
+      structName: persona
       databaseName: floofy
       type: varchar
       length: 64
@@ -111,7 +111,7 @@ objects:
     metadata:
       name: ownerFirstName
       labels:
-        objectIdentifier: '1.2.3'
+        objectIdentifier: '1.2.114'
       annotations:
         comment: "Should not be abbreviated"
     spec:
@@ -127,7 +127,7 @@ objects:
     metadata:
       name: ownerLastName
       labels:
-        objectIdentifier: '1.2.4'
+        objectIdentifier: '1.2.130'
       annotations:
         comment: "Should not be abbreviated"
     spec:
@@ -145,12 +145,12 @@ objects:
     metadata:
       name: firstName
       labels:
-        objectIdentifier: '1.2.4'
+        objectIdentifier: '1.2.148'
       annotations:
         comment: "Should not be abbreviated"
     spec:
       name: firstName
-      structName: person
+      structName: persona
       databaseName: floofy
       type: varchar
       length: 64
@@ -161,12 +161,12 @@ objects:
     metadata:
       name: lastName
       labels:
-        objectIdentifier: '1.2.4'
+        objectIdentifier: '1.2.164'
       annotations:
         comment: "Should not be abbreviated"
     spec:
       name: lastName
-      structName: person
+      structName: persona
       databaseName: floofy
       type: varchar
       length: 64
@@ -177,10 +177,10 @@ objects:
     metadata:
       name: owner
       labels:
-        objectIdentifier: '1.2.55'
+        objectIdentifier: '1.2.180'
     spec:
       databaseName: floofy
-      parentStruct: person
+      parentStruct: persona
       childStruct: pet
       attributeName: owner
       nullable: True
@@ -192,7 +192,7 @@ objects:
         name: biggay
     spec:
       databaseName: floofy
-      structName: person
+      structName: persona
       values:
         firstName: Jonathan
         lastName: Wilbur

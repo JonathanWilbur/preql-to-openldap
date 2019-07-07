@@ -1,0 +1,4 @@
+dn: cn=floofy3,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: floofy3
+olcAttributeTypes: ( 1.2.180 NAME 'owner' EQUALITY distinguishedNameMatch SYNTAX distinguishedNameOID SINGLE-VALUE )

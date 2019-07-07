@@ -37,29 +37,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var transpileForeignKey = function (obj, logger, etcd) { return __awaiter(_this, void 0, void 0, function () {
-    var suffix, objectIdentifier;
+    var objectIdentifier;
     return __generator(this, function (_a) {
-        suffix = ('domain' in obj.metadata.labels && typeof obj.metadata.labels['domain'] === 'string') ?
-            obj.metadata.labels['domain']
-                .split('.')
-                .map(function (dc) { return "dc=" + dc; })
-                .join(',')
-            : 'dc=root';
         objectIdentifier = obj.metadata.labels['objectIdentifier'];
         if (!objectIdentifier) {
             throw new Error("No 'objectIdentifier' label for Foreign Key '" + obj.metadata.name + "'.");
         }
-        return [2 /*return*/, ("dn: cn=" + obj.spec.childStruct + obj.spec.attributeName + "Attribute," + suffix + "\r\n"
-                + "objectClass: olcSchemaConfig\r\n"
-                + ("cn: " + obj.spec.childStruct + obj.spec.attributeName + "Attribute\r\n")
-                + ("olcAttributeTypes: ( " + objectIdentifier + "\r\n")
-                + (" NAME '" + obj.spec.attributeName + "'\r\n")
-                + ' EQUALITY distinguishedNameMatch\r\n'
-                + ' ORDERING caseIgnoreOrderingMatch\r\n'
-                + ' SUBSTR caseIgnoreSubstringsMatch\r\n'
-                + ' SYNTAX distinguishedNameOID\r\n'
-                + ' SINGLE-VALUE\r\n'
-                + ' )')];
+        return [2 /*return*/, ("olcAttributeTypes: ( " + objectIdentifier
+                + (" NAME '" + obj.spec.attributeName + "'")
+                + ' EQUALITY distinguishedNameMatch'
+                + ' SYNTAX distinguishedNameOID'
+                + ' SINGLE-VALUE )')];
     });
 }); };
 exports.default = transpileForeignKey;

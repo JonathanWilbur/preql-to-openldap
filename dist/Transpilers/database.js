@@ -34,30 +34,65 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var transpileDatabase = function (obj, logger) { return __awaiter(_this, void 0, void 0, function () {
-    var databaseName, dbMaxSize, suffix, dbPath;
-    return __generator(this, function (_a) {
-        databaseName = obj.spec.name;
-        dbMaxSize = 107374182400;
-        suffix = ('domain' in obj.metadata.labels && typeof obj.metadata.labels['domain'] === 'string') ?
-            obj.metadata.labels['domain']
-                .split('.')
-                .map(function (dc) { return "dc=" + dc; })
-                .join(',')
-            : 'dc=root';
-        dbPath = '/var/lib/ldap';
-        return [2 /*return*/, ("dn: olcDatabase=" + databaseName + ",cn=config\r\n"
-                + "objectClass: olcDatabaseConfig\r\n"
-                + "objectClass: olcMdbConfig\r\n"
-                + ("olcDatabase: " + databaseName + "\r\n")
-                + ("OlcDbMaxSize: " + dbMaxSize + "\r\n")
-                + ("olcSuffix: " + suffix + "\r\n")
-                + ("olcRootDN: cn=admin," + suffix + "\r\n")
-                + "olcRootPW: yummyyummy\r\n"
-                + ("olcDbDirectory: " + dbPath + "\r\n")
-                + "olcDbIndex: objectClass eq\r\n")];
+var attribute_1 = __importDefault(require("../Transpilers/attribute"));
+var foreignkey_1 = __importDefault(require("../Transpilers/foreignkey"));
+var struct_1 = __importDefault(require("../Transpilers/struct"));
+var transpileDatabase = function (obj, logger, etcd) { return __awaiter(_this, void 0, void 0, function () {
+    var attributes, foreignKeys, structs, transpilations, _a, _b, _c, _d, _e, _f;
+    var _this = this;
+    return __generator(this, function (_g) {
+        switch (_g.label) {
+            case 0:
+                attributes = (etcd.kindIndex.attribute || [])
+                    .filter(function (attr) { return attr.spec.databaseName === obj.spec.name; });
+                foreignKeys = (etcd.kindIndex.foreignkey || [])
+                    .filter(function (fk) { return fk.spec.databaseName === obj.spec.name; });
+                structs = (etcd.kindIndex.struct || [])
+                    .filter(function (struct) { return struct.spec.databaseName === obj.spec.name; });
+                transpilations = [
+                    "dn: cn=" + obj.spec.name + ",cn=schema,cn=config",
+                    'objectClass: olcSchemaConfig',
+                    "cn: " + obj.spec.name,
+                ];
+                if (!(attributes && attributes.length > 0)) return [3 /*break*/, 2];
+                _b = (_a = transpilations).concat;
+                return [4 /*yield*/, Promise.all(attributes.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            return [2 /*return*/, attribute_1.default(obj, logger, etcd)];
+                        });
+                    }); }))];
+            case 1:
+                transpilations = _b.apply(_a, [_g.sent()]);
+                _g.label = 2;
+            case 2:
+                if (!(foreignKeys && foreignKeys.length > 0)) return [3 /*break*/, 4];
+                _d = (_c = transpilations).concat;
+                return [4 /*yield*/, Promise.all(foreignKeys.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            return [2 /*return*/, foreignkey_1.default(obj, logger, etcd)];
+                        });
+                    }); }))];
+            case 3:
+                transpilations = _d.apply(_c, [_g.sent()]);
+                _g.label = 4;
+            case 4:
+                if (!(structs && structs.length > 0)) return [3 /*break*/, 6];
+                _f = (_e = transpilations).concat;
+                return [4 /*yield*/, Promise.all(structs.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            return [2 /*return*/, struct_1.default(obj, logger, etcd)];
+                        });
+                    }); }))];
+            case 5:
+                transpilations = _f.apply(_e, [_g.sent()]);
+                _g.label = 6;
+            case 6: return [2 /*return*/, transpilations.join('\r\n')];
+        }
     });
 }); };
 exports.default = transpileDatabase;

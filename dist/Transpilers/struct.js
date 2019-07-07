@@ -37,39 +37,49 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var transpileStruct = function (obj, logger, etcd) { return __awaiter(_this, void 0, void 0, function () {
-    var suffix, objectIdentifier, musts, mays, ret, comment;
+    var objectIdentifier, musts, mays, ret;
     return __generator(this, function (_a) {
-        suffix = ('domain' in obj.metadata.labels && typeof obj.metadata.labels['domain'] === 'string') ?
-            obj.metadata.labels['domain']
-                .split('.')
-                .map(function (dc) { return "dc=" + dc; })
-                .join(',')
-            : 'dc=root';
         objectIdentifier = obj.metadata.labels['objectIdentifier'];
         if (!objectIdentifier) {
             throw new Error("No 'objectIdentifier' label for Foreign Key '" + obj.metadata.name + "'.");
         }
         musts = (etcd.kindIndex.attribute || [])
+            .concat(etcd.kindIndex.foreignkey || [])
             .filter(function (attr) { return (attr.spec.databaseName === obj.spec.databaseName
-            && attr.spec.structName === obj.spec.name
-            && (!attr.spec.nullable)); });
+            && (('structName' in attr.spec && attr.spec.structName === obj.spec.name)
+                || ('childStruct' in attr.spec && attr.spec.childStruct === obj.spec.name))
+            && !attr.spec.nullable); })
+            .map(function (attr) {
+            if ('name' in attr.spec)
+                return attr.spec.name;
+            else
+                return attr.spec.attributeName;
+        });
         mays = (etcd.kindIndex.attribute || [])
+            .concat(etcd.kindIndex.foreignkey || [])
             .filter(function (attr) { return (attr.spec.databaseName === obj.spec.databaseName
-            && attr.spec.structName === obj.spec.name
-            && attr.spec.nullable); });
-        ret = ("dn: cn=" + obj.spec.name + "Struct," + suffix + "\r\n"
-            + "objectClass: olcSchemaConfig\r\n"
-            + ("cn: " + obj.spec.name + "Struct\r\n")
-            + ("olcObjectClasses: ( " + objectIdentifier + "\r\n")
-            + (" NAME '" + obj.spec.name + "'\r\n"));
-        comment = obj.metadata.annotations['comment'];
-        if (comment) {
-            ret += " DESC '" + comment + "'\r\n"; // FIXME: Escape
+            && (('structName' in attr.spec && attr.spec.structName === obj.spec.name)
+                || ('childStruct' in attr.spec && attr.spec.childStruct === obj.spec.name))
+            && !!attr.spec.nullable // NOTE: For some reason, TypeScript thinks this is a boolean | string.
+        ); })
+            .map(function (attr) {
+            if ('name' in attr.spec)
+                return attr.spec.name;
+            else
+                return attr.spec.attributeName;
+        });
+        ret = "olcObjectClasses: ( " + objectIdentifier + " NAME '" + obj.spec.name + "'";
+        if (obj.metadata.annotations['comment']) {
+            ret += " DESC '" + obj.metadata.annotations['comment'] + "'";
         }
-        ret += (' AUXILIARY\r\n'
-            + (" MUST (" + musts.map(function (m) { return m.spec.name; }).join(' $ ') + ")\r\n")
-            + (" MAY (" + mays.map(function (m) { return m.spec.name; }).join(' $ ') + ")\r\n")
-            + ' )');
+        ret += ' SUP top STRUCTURAL';
+        if (musts.length > 0) {
+            ret += " MUST ( " + musts.join(' $ ') + " )";
+        }
+        if (mays.length > 0) {
+            ret += " MAY ( " + mays.join(' $ ') + " )";
+        }
+        ret += ' )';
         return [2 /*return*/, ret];
     });
 }); };

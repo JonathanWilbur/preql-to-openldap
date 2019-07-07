@@ -1,7 +1,4 @@
 "use strict";
-// dn: cn=schema,cn=config
-// objectClass: olcSchemaConfig
-// cn: schema
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -46,14 +43,8 @@ var matchingRules_1 = __importDefault(require("../matchingRules"));
 var orderingRules_1 = __importDefault(require("../orderingRules"));
 var substringRules_1 = __importDefault(require("../substringRules"));
 var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, void 0, void 0, function () {
-    var suffix, dataType, ldapSyntax, objectIdentifier, ret, comment, matchingRule, defaultMatchingRule, orderingRule, defaultOrderingRule, substringRule, defaultSubstringRule;
+    var dataType, ldapSyntax, objectIdentifier, ret, comment, matchingRule, defaultMatchingRule, orderingRule, defaultOrderingRule, substringRule, defaultSubstringRule;
     return __generator(this, function (_a) {
-        suffix = ('domain' in obj.metadata.labels && typeof obj.metadata.labels['domain'] === 'string') ?
-            obj.metadata.labels['domain']
-                .split('.')
-                .map(function (dc) { return "dc=" + dc; })
-                .join(',')
-            : 'dc=root';
         dataType = (etcd.kindIndex.datatype || [])
             .find(function (dt) { return dt.metadata.name === obj.spec.type; });
         if (!dataType) {
@@ -77,23 +68,19 @@ var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, 
         if (!objectIdentifier) {
             throw new Error("No 'objectIdentifier' label for Attribute '" + obj.metadata.name + "'.");
         }
-        ret = ("dn: cn=" + obj.spec.structName + obj.spec.name + "Attribute," + suffix + "\r\n"
-            + "objectClass: olcSchemaConfig\r\n"
-            + ("cn: " + obj.spec.structName + obj.spec.name + "Attribute\r\n")
-            + ("olcAttributeTypes: ( " + objectIdentifier + "\r\n")
-            + (" NAME '" + obj.spec.name + "'\r\n"));
+        ret = "olcAttributeTypes: ( " + objectIdentifier + " NAME '" + obj.spec.name + "'";
         comment = obj.metadata.annotations['comment'];
         if (comment) {
-            ret += " DESC '" + comment + "'\r\n"; // FIXME: Escape
+            ret += " DESC '" + comment + "'"; // FIXME: Escape
         }
         matchingRule = obj.metadata.labels['matchingRule'];
         if (matchingRule) {
-            ret += " EQUALITY " + matchingRule + "\r\n"; // FIXME: Escape
+            ret += " EQUALITY " + matchingRule; // FIXME: Escape
         }
         else {
             defaultMatchingRule = matchingRules_1.default[ldapSyntax];
             if (defaultMatchingRule) {
-                ret += " EQUALITY " + defaultMatchingRule + "\r\n";
+                ret += " EQUALITY " + defaultMatchingRule;
             }
         }
         orderingRule = obj.metadata.labels['orderingRule'];
@@ -103,23 +90,23 @@ var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, 
         else {
             defaultOrderingRule = orderingRules_1.default[ldapSyntax];
             if (defaultOrderingRule) {
-                ret += " ORDERING " + defaultOrderingRule + "\r\n";
+                ret += " ORDERING " + defaultOrderingRule;
             }
         }
         substringRule = obj.metadata.labels['substringRule'];
         if (substringRule) {
-            ret += " SUBSTR " + substringRule + "\r\n"; // FIXME: Escape
+            ret += " SUBSTR " + substringRule; // FIXME: Escape
         }
         else {
             defaultSubstringRule = substringRules_1.default[ldapSyntax];
             if (defaultSubstringRule) {
-                ret += " SUBSTR " + defaultSubstringRule + "\r\n";
+                ret += " SUBSTR " + defaultSubstringRule;
             }
         }
         ret += " SYNTAX " + ldapSyntax; // FIXME: Escape
-        ret += obj.spec.length ? "{" + obj.spec.length + "}\r\n" : '\r\n';
+        ret += obj.spec.length ? "{" + obj.spec.length + "}" : '';
         if (!obj.spec.multiValued) {
-            ret += " SINGLE-VALUE\r\n";
+            ret += ' SINGLE-VALUE';
         }
         ret += ' )';
         return [2 /*return*/, ret];

@@ -10,7 +10,7 @@ var orderingRules = {
     // '1.3.6.1.4.1.1466.115.121.1.9': undefined, // certificateListOID
     // '1.3.6.1.4.1.1466.115.121.1.10': undefined, // certificatePairOID
     '1.3.6.1.4.1.1466.115.121.1.11': 'caseIgnoreOrderingMatch',
-    '1.3.6.1.4.1.1466.115.121.1.12': 'caseIgnoreOrderingMatch',
+    // '1.3.6.1.4.1.1466.115.121.1.12': undefined, // distinguishedNameOID (Should this be uniqueMemberMatch?)
     '1.3.6.1.4.1.1466.115.121.1.15': 'caseIgnoreOrderingMatch',
     '1.3.6.1.4.1.1466.115.121.1.22': 'caseIgnoreOrderingMatch',
     '1.3.6.1.4.1.1466.115.121.1.24': 'generalizedTimeOrderingMatch',
