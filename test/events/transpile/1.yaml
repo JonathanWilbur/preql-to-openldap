@@ -196,3 +196,9 @@ objects:
       values:
         firstName: Jonathan
         lastName: Wilbur
+  # - apiVersion: preql/1.0.0
+  #   kind: Preamble
+  #   metadata:
+  #     name: copyrightNotice
+  #   spec:
+  #     uncommentedText: 'Copyright 33 (c) Jesus H. Christ'

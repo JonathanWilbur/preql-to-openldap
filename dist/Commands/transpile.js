@@ -42,39 +42,63 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var database_1 = __importDefault(require("../Transpilers/database"));
 var entry_1 = __importDefault(require("../Transpilers/entry"));
 var syntaxObjectIdentifiersLDIF_1 = __importDefault(require("../syntaxObjectIdentifiersLDIF"));
+var preamble_1 = __importDefault(require("../Transpilers/preamble"));
+var postamble_1 = __importDefault(require("../Transpilers/postamble"));
 var transpile = function (etcd, logger) { return __awaiter(_this, void 0, void 0, function () {
-    var transpilations, databases, _a, _b, entries, _c, _d;
+    var transpilations, premables, _a, _b, databases, _c, _d, entries, _e, _f, postambles, _g, _h;
     var _this = this;
-    return __generator(this, function (_e) {
-        switch (_e.label) {
+    return __generator(this, function (_j) {
+        switch (_j.label) {
             case 0:
                 transpilations = [syntaxObjectIdentifiersLDIF_1.default];
-                databases = etcd.kindIndex.database;
-                if (!(databases && databases.length > 0)) return [3 /*break*/, 2];
+                premables = etcd.kindIndex.preamble;
+                if (!(premables && premables.length > 0)) return [3 /*break*/, 2];
                 _b = (_a = transpilations).concat;
+                return [4 /*yield*/, Promise.all(premables.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            return [2 /*return*/, preamble_1.default(obj, logger)];
+                        });
+                    }); }))];
+            case 1:
+                transpilations = _b.apply(_a, [_j.sent()]);
+                _j.label = 2;
+            case 2:
+                databases = etcd.kindIndex.database;
+                if (!(databases && databases.length > 0)) return [3 /*break*/, 4];
+                _d = (_c = transpilations).concat;
                 return [4 /*yield*/, Promise.all(databases.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             return [2 /*return*/, database_1.default(obj, logger, etcd)];
                         });
                     }); }))];
-            case 1:
-                transpilations = _b.apply(_a, [_e.sent()]);
-                _e.label = 2;
-            case 2:
+            case 3:
+                transpilations = _d.apply(_c, [_j.sent()]);
+                _j.label = 4;
+            case 4:
                 entries = etcd.kindIndex.entry;
-                if (!(entries && entries.length > 0)) return [3 /*break*/, 4];
-                _d = (_c = transpilations).concat;
+                if (!(entries && entries.length > 0)) return [3 /*break*/, 6];
+                _f = (_e = transpilations).concat;
                 return [4 /*yield*/, Promise.all(entries.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             return [2 /*return*/, entry_1.default(obj, logger)];
                         });
                     }); }))];
-            case 3:
-                transpilations = _d.apply(_c, [_e.sent()]);
-                _e.label = 4;
-            case 4: 
-            // TODO: Postamble
-            return [2 /*return*/, transpilations.filter(function (t) { return (t !== ''); }).join('\r\n\r\n')];
+            case 5:
+                transpilations = _f.apply(_e, [_j.sent()]);
+                _j.label = 6;
+            case 6:
+                postambles = etcd.kindIndex.postamble;
+                if (!(postambles && postambles.length > 0)) return [3 /*break*/, 8];
+                _h = (_g = transpilations).concat;
+                return [4 /*yield*/, Promise.all(postambles.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            return [2 /*return*/, postamble_1.default(obj, logger)];
+                        });
+                    }); }))];
+            case 7:
+                transpilations = _h.apply(_g, [_j.sent()]);
+                _j.label = 8;
+            case 8: return [2 /*return*/, transpilations.filter(function (t) { return (t !== ''); }).join('\r\n\r\n')];
         }
     });
 }); };

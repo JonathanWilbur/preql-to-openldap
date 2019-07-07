@@ -2,11 +2,20 @@ import { APIObject, APIObjectDatabase, DatabaseSpec, Logger, StructSpec, Suggest
 import transpileDatabase from '../Transpilers/database';
 import transpileEntry from '../Transpilers/entry';
 import syntaxObjectIdentifiersLDIF from '../syntaxObjectIdentifiersLDIF';
+import transpilePreamble from '../Transpilers/preamble';
+import transpilePostamble from '../Transpilers/postamble';
 
 const transpile: SuggestedTargetIndexHandler = async (etcd: APIObjectDatabase, logger: Logger): Promise<string> => {
     let transpilations: string[] = [ syntaxObjectIdentifiersLDIF ];
 
-    // TODO: Premable
+    const premables: APIObject[] | undefined = etcd.kindIndex.preamble;
+    if (premables && premables.length > 0) {
+        transpilations = transpilations.concat(await Promise.all(premables.map(
+            async (obj: APIObject): Promise<string> => {
+                return transpilePreamble(obj, logger);
+            }
+        )));
+    }
 
     const databases: APIObject[] | undefined = etcd.kindIndex.database;
     if (databases && databases.length > 0) {
@@ -26,7 +35,14 @@ const transpile: SuggestedTargetIndexHandler = async (etcd: APIObjectDatabase, l
         )));
     }
 
-    // TODO: Postamble
+    const postambles: APIObject[] | undefined = etcd.kindIndex.postamble;
+    if (postambles && postambles.length > 0) {
+        transpilations = transpilations.concat(await Promise.all(postambles.map(
+            async (obj: APIObject): Promise<string> => {
+                return transpilePostamble(obj, logger);
+            }
+        )));
+    }
 
     return transpilations.filter((t: string) => (t !== '')).join('\r\n\r\n');
 };
