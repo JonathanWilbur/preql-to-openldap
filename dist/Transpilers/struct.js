@@ -47,27 +47,17 @@ var transpileStruct = function (obj, logger, etcd) { return __awaiter(_this, voi
             .concat(etcd.kindIndex.foreignkey || [])
             .filter(function (attr) { return (attr.spec.databaseName === obj.spec.databaseName
             && (('structName' in attr.spec && attr.spec.structName === obj.spec.name)
-                || ('childStruct' in attr.spec && attr.spec.childStruct === obj.spec.name))
+                || ('childStructName' in attr.spec && attr.spec.childStructName === obj.spec.name))
             && !attr.spec.nullable); })
-            .map(function (attr) {
-            if ('name' in attr.spec)
-                return attr.spec.name;
-            else
-                return attr.spec.attributeName;
-        });
+            .map(function (attr) { return attr.spec.name; });
         mays = (etcd.kindIndex.attribute || [])
             .concat(etcd.kindIndex.foreignkey || [])
             .filter(function (attr) { return (attr.spec.databaseName === obj.spec.databaseName
             && (('structName' in attr.spec && attr.spec.structName === obj.spec.name)
-                || ('childStruct' in attr.spec && attr.spec.childStruct === obj.spec.name))
+                || ('childStructName' in attr.spec && attr.spec.childStructName === obj.spec.name))
             && !!attr.spec.nullable // NOTE: For some reason, TypeScript thinks this is a boolean | string.
         ); })
-            .map(function (attr) {
-            if ('name' in attr.spec)
-                return attr.spec.name;
-            else
-                return attr.spec.attributeName;
-        });
+            .map(function (attr) { return attr.spec.name; });
         ret = "olcObjectClasses: ( " + objectIdentifier + " NAME '" + obj.spec.name + "'";
         if (obj.metadata.annotations['comment']) {
             ret += " DESC '" + obj.metadata.annotations['comment'] + "'";

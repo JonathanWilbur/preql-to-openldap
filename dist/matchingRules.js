@@ -27,5 +27,12 @@ var matchingRules = {
     // '1.3.6.1.4.1.1466.115.121.1.49': undefined, // supportedAlgorithmOID
     '1.3.6.1.4.1.1466.115.121.1.50': 'telephoneNumberMatch',
     '1.3.6.1.4.1.1466.115.121.1.52': 'caseIgnoreIA5Match',
+    // '1.3.6.1.1.1.0.0': undefined, // nisNetgroupTripleOID
+    // '1.3.6.1.1.1.0.1': undefined, // rfc2307BootParameterOID
+    // '1.2.826.0.1.3344810.7.1': undefined, // serialNumberAndIssuerOID
+    'booleanOID': 'booleanMatch',
+    'integerOID': 'integerMatch',
+    'printableStringOID': 'caseIgnoreMatch',
+    'directoryStringOID': 'caseIgnoreMatch',
 };
 exports.default = matchingRules;

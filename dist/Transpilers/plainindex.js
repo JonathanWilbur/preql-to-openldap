@@ -36,14 +36,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var transpileEntry = function (obj, logger) { return __awaiter(_this, void 0, void 0, function () {
+// Index example:
+// dn: olcDatabase={1}mdb,cn=config
+// changetype: modify
+// add: olcDbIndex
+// olcDbIndex: cn,sn,uid eq
+var transpilePlainIndex = function (obj) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, ("dn: cn=" + obj.metadata.name + ",__ENTRY_SUFFIX_" + obj.metadata.name + "__\r\n"
-                + ("objectClass: " + obj.spec.structName + "\r\n")
-                + ("cn: " + obj.metadata.name + "\r\n")
-                + Object.entries(obj.spec.values)
-                    .map(function (entry) { return entry[0] + ": " + entry[1]; })
-                    .join('\r\n'))];
+        return [2 /*return*/, ("dn: olcDatabase=__OLC_DATABASE__,cn=config\r\n"
+                + "changetype: modify\r\n"
+                + "add: olcDbIndex\r\n"
+                + ("olcDbIndex: " + obj.spec.keyAttributes.map(function (key) { return key.name; }).join(',') + " eq"))];
     });
 }); };
-exports.default = transpileEntry;
+exports.default = transpilePlainIndex;

@@ -28,6 +28,10 @@ const matchingRules: Record<string, string> = {
     // '1.3.6.1.1.1.0.0': undefined, // nisNetgroupTripleOID
     // '1.3.6.1.1.1.0.1': undefined, // rfc2307BootParameterOID
     // '1.2.826.0.1.3344810.7.1': undefined, // serialNumberAndIssuerOID
+    'booleanOID': 'booleanMatch',
+    'integerOID': 'integerMatch',
+    'printableStringOID': 'caseIgnoreMatch',
+    'directoryStringOID': 'caseIgnoreMatch',
 };
 
 export default matchingRules;

@@ -4,6 +4,7 @@ import transpileEntry from '../Transpilers/entry';
 import syntaxObjectIdentifiersLDIF from '../syntaxObjectIdentifiersLDIF';
 import transpilePreamble from '../Transpilers/preamble';
 import transpilePostamble from '../Transpilers/postamble';
+import transpilePlainIndex from '../Transpilers/plainindex';
 
 const transpile: SuggestedTargetIndexHandler = async (etcd: APIObjectDatabase, logger: Logger): Promise<string> => {
     let transpilations: string[] = [ syntaxObjectIdentifiersLDIF ];
@@ -22,6 +23,15 @@ const transpile: SuggestedTargetIndexHandler = async (etcd: APIObjectDatabase, l
         transpilations = transpilations.concat(await Promise.all(databases.map(
             async (obj: APIObject): Promise<string> => {
                 return transpileDatabase(obj, logger, etcd);
+            }
+        )));
+    }
+
+    const plainIndexes: APIObject[] | undefined = etcd.kindIndex.plainindex;
+    if (plainIndexes && plainIndexes.length > 0) {
+        transpilations = transpilations.concat(await Promise.all(plainIndexes.map(
+            async (obj: APIObject): Promise<string> => {
+                return transpilePlainIndex(obj, logger);
             }
         )));
     }

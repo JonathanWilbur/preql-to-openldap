@@ -1,3 +1,5 @@
+# NOTE: I renamed the Struct 'person' to 'persona' to avoid conflict with the
+# 'person' objectClass that comes by default on some OpenLDAP deployments.
 transpileTo: mariadb
 objects:
   - apiVersion: preql/1.0.0
@@ -180,9 +182,9 @@ objects:
         objectIdentifier: '1.2.180'
     spec:
       databaseName: floofy
-      parentStruct: persona
-      childStruct: pet
-      attributeName: owner
+      parentStructName: persona
+      childStructName: pet
+      name: owner
       nullable: True
   - apiVersion: preql/1.0.0
     kind: Entry
@@ -196,6 +198,17 @@ objects:
       values:
         firstName: Jonathan
         lastName: Wilbur
+  - apiVersion: preql/1.0.0
+    kind: PlainIndex
+    metadata:
+      name: bigboi
+    spec:
+      name: bigboi
+      structName: persona
+      databaseName: floofy
+      keyAttributes:
+        - name: lastName
+          ascending: True
   # - apiVersion: preql/1.0.0
   #   kind: Preamble
   #   metadata:

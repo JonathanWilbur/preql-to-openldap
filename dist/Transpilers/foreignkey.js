@@ -44,7 +44,7 @@ var transpileForeignKey = function (obj, logger, etcd) { return __awaiter(_this,
             throw new Error("No 'objectIdentifier' label for Foreign Key '" + obj.metadata.name + "'.");
         }
         return [2 /*return*/, ("olcAttributeTypes: ( " + objectIdentifier
-                + (" NAME '" + obj.spec.attributeName + "'")
+                + (" NAME '" + obj.spec.name + "'")
                 + ' EQUALITY distinguishedNameMatch'
                 + ' SYNTAX distinguishedNameOID'
                 + ' SINGLE-VALUE )')];

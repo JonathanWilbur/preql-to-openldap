@@ -57,7 +57,23 @@ var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, 
             switch (dataType.spec.jsonEquivalent) {
                 case ('boolean'): return 'booleanOID';
                 case ('integer'): return 'integerOID';
-                case ('number'): return 'ia5StringOID';
+                /**
+                 * Unfortunately, OpenLDAP does not seem to support the ASN.1 REAL
+                 * type for whatever reason, so we have to use a string type to
+                 * represent numbers that can be non-integral, such as:
+                 * - 123
+                 * - 1.23
+                 * - 1.23 * 10^-1
+                 * - 1.23E-1
+                 * - +4.56
+                 * - Infinity
+                 * - -Infinity
+                 * - NaN
+                 * - 5 + 3i
+                 * - PI
+                 * - 5 / 3
+                 */
+                case ('number'): return 'printableStringOID';
                 case ('string'): return 'directoryStringOID';
                 default: {
                     throw new Error("No 'ldapSyntax' label for DataType '" + dataType.metadata.name + "'.");

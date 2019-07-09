@@ -27,5 +27,11 @@ var orderingRules = {
     // '1.3.6.1.4.1.1466.115.121.1.49': undefined, // supportedAlgorithmOID
     '1.3.6.1.4.1.1466.115.121.1.50': 'caseIgnoreOrderingMatch',
     '1.3.6.1.4.1.1466.115.121.1.52': 'caseIgnoreOrderingMatch',
+    // '1.3.6.1.1.1.0.0': undefined, // nisNetgroupTripleOID
+    // '1.3.6.1.1.1.0.1': undefined, // rfc2307BootParameterOID
+    // '1.2.826.0.1.3344810.7.1': undefined, // serialNumberAndIssuerOID
+    'integerOID': 'integerOrderingMatch',
+    'printableStringOID': 'caseIgnoreOrderingMatch',
+    'directoryStringOID': 'caseIgnoreOrderingMatch',
 };
 exports.default = orderingRules;

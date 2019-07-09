@@ -8,7 +8,7 @@ const transpileForeignKey = async (obj: APIObject<ForeignKeySpec>, logger: Logge
 
     return (
         `olcAttributeTypes: ( ${objectIdentifier}`
-        + ` NAME '${obj.spec.attributeName}'`
+        + ` NAME '${obj.spec.name}'`
         + ' EQUALITY distinguishedNameMatch'
         + ' SYNTAX distinguishedNameOID'
         + ' SINGLE-VALUE )'

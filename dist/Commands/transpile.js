@@ -44,11 +44,12 @@ var entry_1 = __importDefault(require("../Transpilers/entry"));
 var syntaxObjectIdentifiersLDIF_1 = __importDefault(require("../syntaxObjectIdentifiersLDIF"));
 var preamble_1 = __importDefault(require("../Transpilers/preamble"));
 var postamble_1 = __importDefault(require("../Transpilers/postamble"));
+var plainindex_1 = __importDefault(require("../Transpilers/plainindex"));
 var transpile = function (etcd, logger) { return __awaiter(_this, void 0, void 0, function () {
-    var transpilations, premables, _a, _b, databases, _c, _d, entries, _e, _f, postambles, _g, _h;
+    var transpilations, premables, _a, _b, databases, _c, _d, plainIndexes, _e, _f, entries, _g, _h, postambles, _j, _k;
     var _this = this;
-    return __generator(this, function (_j) {
-        switch (_j.label) {
+    return __generator(this, function (_l) {
+        switch (_l.label) {
             case 0:
                 transpilations = [syntaxObjectIdentifiersLDIF_1.default];
                 premables = etcd.kindIndex.preamble;
@@ -60,8 +61,8 @@ var transpile = function (etcd, logger) { return __awaiter(_this, void 0, void 0
                         });
                     }); }))];
             case 1:
-                transpilations = _b.apply(_a, [_j.sent()]);
-                _j.label = 2;
+                transpilations = _b.apply(_a, [_l.sent()]);
+                _l.label = 2;
             case 2:
                 databases = etcd.kindIndex.database;
                 if (!(databases && databases.length > 0)) return [3 /*break*/, 4];
@@ -72,33 +73,45 @@ var transpile = function (etcd, logger) { return __awaiter(_this, void 0, void 0
                         });
                     }); }))];
             case 3:
-                transpilations = _d.apply(_c, [_j.sent()]);
-                _j.label = 4;
+                transpilations = _d.apply(_c, [_l.sent()]);
+                _l.label = 4;
             case 4:
-                entries = etcd.kindIndex.entry;
-                if (!(entries && entries.length > 0)) return [3 /*break*/, 6];
+                plainIndexes = etcd.kindIndex.plainindex;
+                if (!(plainIndexes && plainIndexes.length > 0)) return [3 /*break*/, 6];
                 _f = (_e = transpilations).concat;
+                return [4 /*yield*/, Promise.all(plainIndexes.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            return [2 /*return*/, plainindex_1.default(obj, logger)];
+                        });
+                    }); }))];
+            case 5:
+                transpilations = _f.apply(_e, [_l.sent()]);
+                _l.label = 6;
+            case 6:
+                entries = etcd.kindIndex.entry;
+                if (!(entries && entries.length > 0)) return [3 /*break*/, 8];
+                _h = (_g = transpilations).concat;
                 return [4 /*yield*/, Promise.all(entries.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             return [2 /*return*/, entry_1.default(obj, logger)];
                         });
                     }); }))];
-            case 5:
-                transpilations = _f.apply(_e, [_j.sent()]);
-                _j.label = 6;
-            case 6:
+            case 7:
+                transpilations = _h.apply(_g, [_l.sent()]);
+                _l.label = 8;
+            case 8:
                 postambles = etcd.kindIndex.postamble;
-                if (!(postambles && postambles.length > 0)) return [3 /*break*/, 8];
-                _h = (_g = transpilations).concat;
+                if (!(postambles && postambles.length > 0)) return [3 /*break*/, 10];
+                _k = (_j = transpilations).concat;
                 return [4 /*yield*/, Promise.all(postambles.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             return [2 /*return*/, postamble_1.default(obj, logger)];
                         });
                     }); }))];
-            case 7:
-                transpilations = _h.apply(_g, [_j.sent()]);
-                _j.label = 8;
-            case 8: return [2 /*return*/, transpilations.filter(function (t) { return (t !== ''); }).join('\r\n\r\n')];
+            case 9:
+                transpilations = _k.apply(_j, [_l.sent()]);
+                _l.label = 10;
+            case 10: return [2 /*return*/, transpilations.filter(function (t) { return (t !== ''); }).join('\r\n\r\n')];
         }
     });
 }); };

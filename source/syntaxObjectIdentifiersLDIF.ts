@@ -1,6 +1,7 @@
 // # Source: http://www.zytrax.com/books/ldap/apa/types.html
 const syntaxObjectIdentifiersLDIF: string =
-`dn: cn=syntaxOids,cn=schema,cn=config
+`# Created by the PreQL-to-OpenLDAP Transpiler.
+dn: cn=syntaxOids,cn=schema,cn=config
 objectClass: olcSchemaConfig
 cn: syntaxOids
 olcObjectIdentifier: audioOID 1.3.6.1.4.1.1466.115.121.1.4
@@ -30,7 +31,6 @@ olcObjectIdentifier: telephoneNumberOID 1.3.6.1.4.1.1466.115.121.1.50
 olcObjectIdentifier: telexNumberOID 1.3.6.1.4.1.1466.115.121.1.52
 olcObjectIdentifier: nisNetgroupTripleOID 1.3.6.1.1.1.0.0
 olcObjectIdentifier: rfc2307BootParameterOID 1.3.6.1.1.1.0.1
-olcObjectIdentifier: serialNumberAndIssuerOID 1.2.826.0.1.3344810.7.1
-`;
+olcObjectIdentifier: serialNumberAndIssuerOID 1.2.826.0.1.3344810.7.1`;
 
 export default syntaxObjectIdentifiersLDIF;

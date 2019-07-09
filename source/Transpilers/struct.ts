@@ -12,14 +12,11 @@ const transpileStruct = async (obj: APIObject<StructSpec>, logger: Logger, etcd:
             attr.spec.databaseName === obj.spec.databaseName
             && (
                 ('structName' in attr.spec && attr.spec.structName === obj.spec.name)
-                || ('childStruct' in attr.spec && attr.spec.childStruct === obj.spec.name)
+                || ('childStructName' in attr.spec && attr.spec.childStructName === obj.spec.name)
             )
             && !attr.spec.nullable
         ))
-        .map((attr: APIObject<AttributeSpec | ForeignKeySpec>): string => {
-            if ('name' in attr.spec) return attr.spec.name;
-            else return attr.spec.attributeName;
-        });
+        .map((attr: APIObject<AttributeSpec | ForeignKeySpec>): string => attr.spec.name);
 
     const mays: string[] = (etcd.kindIndex.attribute || [])
         .concat(etcd.kindIndex.foreignkey || [])
@@ -27,14 +24,11 @@ const transpileStruct = async (obj: APIObject<StructSpec>, logger: Logger, etcd:
             attr.spec.databaseName === obj.spec.databaseName
             && (
                 ('structName' in attr.spec && attr.spec.structName === obj.spec.name)
-                || ('childStruct' in attr.spec && attr.spec.childStruct === obj.spec.name)
+                || ('childStructName' in attr.spec && attr.spec.childStructName === obj.spec.name)
             )
             && !!attr.spec.nullable // NOTE: For some reason, TypeScript thinks this is a boolean | string.
         ))
-        .map((attr: APIObject<AttributeSpec | ForeignKeySpec>): string => {
-            if ('name' in attr.spec) return attr.spec.name;
-            else return attr.spec.attributeName;
-        });
+        .map((attr: APIObject<AttributeSpec | ForeignKeySpec>): string => attr.spec.name);
 
     let ret: string = `olcObjectClasses: ( ${objectIdentifier} NAME '${obj.spec.name}'`;
     if (obj.metadata.annotations['comment']) {

@@ -1,15 +1,8 @@
 import { APIObject, Logger, EntrySpec, SuggestedTargetObjectHandler } from 'preql-core';
 
 const transpileEntry: SuggestedTargetObjectHandler = async (obj: APIObject<EntrySpec>, logger: Logger): Promise<string> => {
-    const suffix: string = ('domain' in obj.metadata.labels && typeof obj.metadata.labels['domain'] === 'string') ?
-        obj.metadata.labels['domain']
-            .split('.')
-            .map((dc: string): string => `dc=${dc}`)
-            .join(',')
-        : 'dc=root';
-
     return (
-        `dn: cn=${obj.metadata.name},${suffix}\r\n`
+        `dn: cn=${obj.metadata.name},__ENTRY_SUFFIX_${obj.metadata.name}__\r\n`
         + `objectClass: ${obj.spec.structName}\r\n`
         + `cn: ${obj.metadata.name}\r\n`
         + Object.entries(obj.spec.values)
