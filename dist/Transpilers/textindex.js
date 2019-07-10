@@ -43,7 +43,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // olcDbIndex: cn,sn,uid eq
 var transpileTextIndex = function (obj) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, ("dn: olcDatabase=__OLC_DATABASE__,cn=config\r\n"
+        return [2 /*return*/, ('# Replace __OLC_DATABASE__ below and uncomment.\r\n'
+                + "dn: olcDatabase=__OLC_DATABASE__,cn=config\r\n"
                 + "changetype: modify\r\n"
                 + "add: olcDbIndex\r\n"
                 + ("olcDbIndex: " + obj.spec.keyAttributes.map(function (key) { return key.name; }).join(',') + " sub"))];

@@ -6,7 +6,8 @@ import { APIObject, TextIndexSpec, SuggestedTargetObjectHandler } from 'preql-co
 // olcDbIndex: cn,sn,uid eq
 const transpileTextIndex: SuggestedTargetObjectHandler = async (obj: APIObject<TextIndexSpec>): Promise<string> => {
     return (
-        `dn: olcDatabase=__OLC_DATABASE__,cn=config\r\n`
+        '# Replace __OLC_DATABASE__ below and uncomment.\r\n'
+        + `dn: olcDatabase=__OLC_DATABASE__,cn=config\r\n`
         + `changetype: modify\r\n`
         + `add: olcDbIndex\r\n`
         + `olcDbIndex: ${obj.spec.keyAttributes.map(key => key.name).join(',')} sub`

@@ -6,10 +6,11 @@ import { APIObject, PlainIndexSpec, SuggestedTargetObjectHandler } from 'preql-c
 // olcDbIndex: cn,sn,uid eq
 const transpilePlainIndex: SuggestedTargetObjectHandler = async (obj: APIObject<PlainIndexSpec>): Promise<string> => {
     return (
-        `dn: olcDatabase=__OLC_DATABASE__,cn=config\r\n`
-        + `changetype: modify\r\n`
-        + `add: olcDbIndex\r\n`
-        + `olcDbIndex: ${obj.spec.keyAttributes.map(key => key.name).join(',')} eq`
+        '# Replace __OLC_DATABASE__ below and uncomment.\r\n'
+        + `# dn: olcDatabase=__OLC_DATABASE__,cn=config\r\n`
+        + `# changetype: modify\r\n`
+        + `# add: olcDbIndex\r\n`
+        + `# olcDbIndex: ${obj.spec.keyAttributes.map(key => key.name).join(',')} eq`
     );
 };
 

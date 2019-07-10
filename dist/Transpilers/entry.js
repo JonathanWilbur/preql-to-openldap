@@ -38,9 +38,11 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var transpileEntry = function (obj, logger) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, ("dn: cn=" + obj.metadata.name + ",__ENTRY_SUFFIX_" + obj.metadata.name + "__\r\n"
+        if (!obj.spec.distinguishedName) {
+            throw new Error("Entry '" + obj.metadata.name + "' did not have a 'distinguishedName'.");
+        }
+        return [2 /*return*/, ("dn: " + obj.spec.distinguishedName + "\r\n"
                 + ("objectClass: " + obj.spec.structName + "\r\n")
-                + ("cn: " + obj.metadata.name + "\r\n")
                 + Object.entries(obj.spec.values)
                     .map(function (entry) { return entry[0] + ": " + entry[1]; })
                     .join('\r\n'))];
