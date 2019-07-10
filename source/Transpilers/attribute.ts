@@ -2,10 +2,13 @@ import { APIObject, Logger, AttributeSpec, APIObjectDatabase, DataTypeSpec } fro
 import matchingRules from '../matchingRules';
 import orderingRules from '../orderingRules';
 import substringRules from '../substringRules';
+import prohibitedIdentifiers from '../prohibitedIdentifiers';
 
 const transpileAttribute = async (obj: APIObject<AttributeSpec>, logger: Logger, etcd: APIObjectDatabase): Promise<string> => {
-    const dataType: APIObject<DataTypeSpec> | undefined = (etcd.kindIndex.datatype || [])
-        .find((dt: APIObject<DataTypeSpec>): boolean => dt.metadata.name === obj.spec.type);
+    if (prohibitedIdentifiers.indexOf(obj.spec.name) !== -1) {
+        throw new Error(`Attribute name '${obj.spec.name}' is prohibited.`);
+    }
+    const dataType: APIObject<DataTypeSpec> | undefined = etcd.kindNameIndex[`datatype:${obj.spec.type}`];
     if (!dataType) {
         throw new Error(`No data type named '${obj.spec.type}'.`);
     }

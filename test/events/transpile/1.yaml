@@ -190,9 +190,8 @@ objects:
     kind: Entry
     metadata:
       name: myself
-      labels:
-        name: biggay
     spec:
+      distinguishedName: dc=wilbur,dc=space
       databaseName: floofy
       structName: persona
       values:

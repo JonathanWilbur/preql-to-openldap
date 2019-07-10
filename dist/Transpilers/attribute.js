@@ -42,11 +42,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var matchingRules_1 = __importDefault(require("../matchingRules"));
 var orderingRules_1 = __importDefault(require("../orderingRules"));
 var substringRules_1 = __importDefault(require("../substringRules"));
+var prohibitedIdentifiers_1 = __importDefault(require("../prohibitedIdentifiers"));
 var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, void 0, void 0, function () {
     var dataType, ldapSyntax, objectIdentifier, ret, comment, matchingRule, defaultMatchingRule, orderingRule, defaultOrderingRule, substringRule, defaultSubstringRule;
     return __generator(this, function (_a) {
-        dataType = (etcd.kindIndex.datatype || [])
-            .find(function (dt) { return dt.metadata.name === obj.spec.type; });
+        if (prohibitedIdentifiers_1.default.indexOf(obj.spec.name) !== -1) {
+            throw new Error("Attribute name '" + obj.spec.name + "' is prohibited.");
+        }
+        dataType = etcd.kindNameIndex["datatype:" + obj.spec.type];
         if (!dataType) {
             throw new Error("No data type named '" + obj.spec.type + "'.");
         }

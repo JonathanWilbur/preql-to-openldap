@@ -66,10 +66,10 @@ Because of limitations of LDAP--not PreQL--this library cannot do the following:
 - [ ] Configurable database files location
 - [ ] Configurable LDAP backend
 - [x] Get `Entry` DN from `distinguishedName`
-- [ ] Restrict attribute names:
-  - [ ] `dn`
-  - [ ] `distinguishedName`
-  - [ ] `objectClass`
+- [x] Restrict attribute names:
+  - [x] `dn`
+  - [x] `distinguishedName`
+  - [x] `objectClass`
 - [ ] Warn on unrecognized kinds
 - [ ] Use backup syntax OIDs
 - [ ] Use attribute aliases
