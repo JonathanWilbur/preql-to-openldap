@@ -1,9 +1,9 @@
 import { APIObject, Logger, APIObjectDatabase, StructSpec, AttributeSpec, ForeignKeySpec } from 'preql-core';
 
 const transpileStruct = async (obj: APIObject<StructSpec>, logger: Logger, etcd: APIObjectDatabase): Promise<string> => {
-    const objectIdentifier: string | undefined = obj.metadata.labels['objectIdentifier'];
+    const objectIdentifier: string | undefined = obj.spec.objectIdentifier;
     if (!objectIdentifier) {
-        throw new Error(`No 'objectIdentifier' label for Foreign Key '${obj.metadata.name}'.`);
+        throw new Error(`No 'objectIdentifier' label for Struct '${obj.metadata.name}'.`);
     }
 
     const musts: string[] = (etcd.kindIndex.attribute || [])

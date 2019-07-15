@@ -39,9 +39,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var transpileStruct = function (obj, logger, etcd) { return __awaiter(_this, void 0, void 0, function () {
     var objectIdentifier, musts, mays, ret;
     return __generator(this, function (_a) {
-        objectIdentifier = obj.metadata.labels['objectIdentifier'];
+        objectIdentifier = obj.spec.objectIdentifier;
         if (!objectIdentifier) {
-            throw new Error("No 'objectIdentifier' label for Foreign Key '" + obj.metadata.name + "'.");
+            throw new Error("No 'objectIdentifier' label for Struct '" + obj.metadata.name + "'.");
         }
         musts = (etcd.kindIndex.attribute || [])
             .concat(etcd.kindIndex.foreignkey || [])

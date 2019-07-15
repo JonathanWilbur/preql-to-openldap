@@ -73,6 +73,10 @@ Because of limitations of LDAP--not PreQL--this library cannot do the following:
 - [ ] Warn on unrecognized kinds
 - [ ] Use backup syntax OIDs
 - [ ] Use attribute aliases
+- [ ] Add and use syntax rule OIDs
+  - [ ] `EQUALITY`
+  - [ ] `ORDERING`
+  - [ ] `SUBSTR`
 - [ ] Configure `Constraints` overlay.
 - [ ] Configure `refint` overlay.
 - [ ] Testing

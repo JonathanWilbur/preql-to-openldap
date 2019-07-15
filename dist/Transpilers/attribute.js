@@ -42,9 +42,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var matchingRules_1 = __importDefault(require("../matchingRules"));
 var orderingRules_1 = __importDefault(require("../orderingRules"));
 var substringRules_1 = __importDefault(require("../substringRules"));
+var syntaxes_1 = __importDefault(require("../syntaxes"));
 var prohibitedIdentifiers_1 = __importDefault(require("../prohibitedIdentifiers"));
 var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, void 0, void 0, function () {
-    var dataType, ldapSyntax, objectIdentifier, ret, comment, matchingRule, defaultMatchingRule, orderingRule, defaultOrderingRule, substringRule, defaultSubstringRule;
+    var dataType, ldapSyntax, ret, comment, matchingRule, defaultMatchingRule, orderingRule, defaultOrderingRule, substringRule, defaultSubstringRule, chosenSyntaxOID;
     return __generator(this, function (_a) {
         if (prohibitedIdentifiers_1.default.indexOf(obj.spec.name) !== -1) {
             throw new Error("Attribute name '" + obj.spec.name + "' is prohibited.");
@@ -54,12 +55,13 @@ var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, 
             throw new Error("No data type named '" + obj.spec.type + "'.");
         }
         ldapSyntax = (function () {
-            var ret = dataType.metadata.labels['ldapSyntax'];
-            if (ret)
-                return ret;
+            var syntaxOID = (dataType.spec.syntaxObjectIdentifiers || [])
+                .find(function (oid) { return (oid in syntaxes_1.default); });
+            if (syntaxOID)
+                return syntaxes_1.default[syntaxOID];
             switch (dataType.spec.jsonEquivalent) {
-                case ('boolean'): return 'booleanOID';
-                case ('integer'): return 'integerOID';
+                case ('boolean'): return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.7']; // BOOLEAN
+                case ('integer'): return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.27']; // INTEGER
                 /**
                  * Unfortunately, OpenLDAP does not seem to support the ASN.1 REAL
                  * type for whatever reason, so we have to use a string type to
@@ -76,53 +78,61 @@ var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, 
                  * - PI
                  * - 5 / 3
                  */
-                case ('number'): return 'printableStringOID';
-                case ('string'): return 'directoryStringOID';
+                case ('number'): return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.44']; // PrintableString
+                case ('string'): return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.15']; // DirectoryString
                 default: {
                     throw new Error("No 'ldapSyntax' label for DataType '" + dataType.metadata.name + "'.");
                 }
             }
         })();
-        objectIdentifier = obj.metadata.labels['objectIdentifier'];
-        if (!objectIdentifier) {
+        if (!obj.spec.objectIdentifier) {
             throw new Error("No 'objectIdentifier' label for Attribute '" + obj.metadata.name + "'.");
         }
-        ret = "olcAttributeTypes: ( " + objectIdentifier + " NAME '" + obj.spec.name + "'";
+        ret = "olcAttributeTypes: ( " + obj.spec.objectIdentifier + " NAME '" + obj.spec.name + "'";
         comment = obj.metadata.annotations['comment'];
         if (comment) {
             ret += " DESC '" + comment + "'"; // FIXME: Escape
         }
-        matchingRule = obj.metadata.labels['matchingRule'];
+        matchingRule = (obj.spec.matchingRules || [])
+            .find(function (mr) { return matchingRules_1.default.indexOf(mr) !== -1; });
         if (matchingRule) {
             ret += " EQUALITY " + matchingRule; // FIXME: Escape
         }
         else {
-            defaultMatchingRule = matchingRules_1.default[ldapSyntax];
+            defaultMatchingRule = ldapSyntax.matchingRule;
             if (defaultMatchingRule) {
                 ret += " EQUALITY " + defaultMatchingRule;
             }
         }
-        orderingRule = obj.metadata.labels['orderingRule'];
+        orderingRule = (obj.spec.orderingRules || [])
+            .find(function (or) { return orderingRules_1.default.indexOf(or) !== -1; });
         if (orderingRule) {
             ret += " ORDERING " + orderingRule + "\r\n"; // FIXME: Escape
         }
         else {
-            defaultOrderingRule = orderingRules_1.default[ldapSyntax];
+            defaultOrderingRule = ldapSyntax.orderingRule;
             if (defaultOrderingRule) {
                 ret += " ORDERING " + defaultOrderingRule;
             }
         }
-        substringRule = obj.metadata.labels['substringRule'];
+        substringRule = (obj.spec.substringRules || [])
+            .find(function (sr) { return substringRules_1.default.indexOf(sr) !== -1; });
         if (substringRule) {
             ret += " SUBSTR " + substringRule; // FIXME: Escape
         }
         else {
-            defaultSubstringRule = substringRules_1.default[ldapSyntax];
+            defaultSubstringRule = ldapSyntax.substringsRule;
             if (defaultSubstringRule) {
                 ret += " SUBSTR " + defaultSubstringRule;
             }
         }
-        ret += " SYNTAX " + ldapSyntax; // FIXME: Escape
+        chosenSyntaxOID = (dataType.spec.syntaxObjectIdentifiers || [])
+            .find(function (oid) { return (oid in syntaxes_1.default); });
+        if (!chosenSyntaxOID) {
+            throw new Error('No acceptable syntax object identifier found for Attribute '
+                + ("'" + obj.metadata.name + "', having type '" + obj.spec.type + "'."));
+        }
+        ret += " SYNTAX " + chosenSyntaxOID;
         ret += obj.spec.length ? "{" + obj.spec.length + "}" : '';
         if (!obj.spec.multiValued) {
             ret += ' SINGLE-VALUE';

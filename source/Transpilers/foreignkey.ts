@@ -1,7 +1,7 @@
 import { APIObject, Logger, APIObjectDatabase, ForeignKeySpec } from 'preql-core';
 
 const transpileForeignKey = async (obj: APIObject<ForeignKeySpec>, logger: Logger, etcd: APIObjectDatabase): Promise<string> => {
-    const objectIdentifier: string | undefined = obj.metadata.labels['objectIdentifier'];
+    const objectIdentifier: string | undefined = obj.spec.objectIdentifier;
     if (!objectIdentifier) {
         throw new Error(`No 'objectIdentifier' label for Foreign Key '${obj.metadata.name}'.`);
     }
