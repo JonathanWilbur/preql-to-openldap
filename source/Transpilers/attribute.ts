@@ -16,6 +16,14 @@ const transpileAttribute = async (obj: APIObject<AttributeSpec>, logger: Logger,
     }
 
     const ldapSyntax: Syntax = ((): Syntax => {
+        /**
+         * Even though the switch statement below will ensure that all Enums
+         * become DirectoryString types, it would be possible to change the
+         * type by specifying a different syntaxOID. Putting this first
+         * circumvents this issue by ignoring `syntaxObjectIdentifiers` if
+         * the data type is an Enum.
+         */
+        if (dataType.spec.values) return syntaxes['1.3.6.1.4.1.1466.115.121.1.15']; // DirectoryString
         let syntaxOID: string | undefined = (dataType.spec.syntaxObjectIdentifiers || [])
             .find((oid: string): boolean => (oid in syntaxes));
         if (syntaxOID) return syntaxes[syntaxOID];

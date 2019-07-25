@@ -1,4 +1,4 @@
-import { APIObject, APIObjectDatabase, DatabaseSpec, Logger, StructSpec, SuggestedTargetIndexHandler } from 'preql-core';
+import { APIObject, APIObjectDatabase, Logger } from 'preql-core';
 import transpileDatabase from '../Transpilers/database';
 import transpileEntry from '../Transpilers/entry';
 import syntaxObjectIdentifiersLDIF from '../syntaxObjectIdentifiersLDIF';
@@ -6,14 +6,14 @@ import transpilePreamble from '../Transpilers/preamble';
 import transpilePostamble from '../Transpilers/postamble';
 import transpilePlainIndex from '../Transpilers/plainindex';
 
-const transpile: SuggestedTargetIndexHandler = async (etcd: APIObjectDatabase, logger: Logger): Promise<string> => {
+const transpile = async (etcd: APIObjectDatabase, logger: Logger): Promise<string> => {
     let transpilations: string[] = [ syntaxObjectIdentifiersLDIF ];
 
     const premables: APIObject[] | undefined = etcd.kindIndex.preamble;
     if (premables && premables.length > 0) {
         transpilations = transpilations.concat(await Promise.all(premables.map(
             async (obj: APIObject): Promise<string> => {
-                return transpilePreamble(obj, logger);
+                return transpilePreamble(obj);
             }
         )));
     }
@@ -31,7 +31,7 @@ const transpile: SuggestedTargetIndexHandler = async (etcd: APIObjectDatabase, l
     if (plainIndexes && plainIndexes.length > 0) {
         transpilations = transpilations.concat(await Promise.all(plainIndexes.map(
             async (obj: APIObject): Promise<string> => {
-                return transpilePlainIndex(obj, logger);
+                return transpilePlainIndex(obj);
             }
         )));
     }
@@ -49,7 +49,7 @@ const transpile: SuggestedTargetIndexHandler = async (etcd: APIObjectDatabase, l
     if (postambles && postambles.length > 0) {
         transpilations = transpilations.concat(await Promise.all(postambles.map(
             async (obj: APIObject): Promise<string> => {
-                return transpilePostamble(obj, logger);
+                return transpilePostamble(obj);
             }
         )));
     }

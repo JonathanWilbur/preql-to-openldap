@@ -1,6 +1,6 @@
-import { APIObject, Logger, EntrySpec, SuggestedTargetObjectHandler } from 'preql-core';
+import { APIObject, Logger, EntrySpec } from 'preql-core';
 
-const transpileEntry: SuggestedTargetObjectHandler = async (obj: APIObject<EntrySpec>, logger: Logger): Promise<string> => {
+const transpileEntry = async (obj: APIObject<EntrySpec>, logger: Logger): Promise<string> => {
     if (!obj.spec.distinguishedName) {
         throw new Error(`Entry '${obj.metadata.name}' did not have a 'distinguishedName'.`);
     }

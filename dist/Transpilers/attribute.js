@@ -55,6 +55,15 @@ var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, 
             throw new Error("No data type named '" + obj.spec.type + "'.");
         }
         ldapSyntax = (function () {
+            /**
+             * Even though the switch statement below will ensure that all Enums
+             * become DirectoryString types, it would be possible to change the
+             * type by specifying a different syntaxOID. Putting this first
+             * circumvents this issue by ignoring `syntaxObjectIdentifiers` if
+             * the data type is an Enum.
+             */
+            if (dataType.spec.values)
+                return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.15']; // DirectoryString
             var syntaxOID = (dataType.spec.syntaxObjectIdentifiers || [])
                 .find(function (oid) { return (oid in syntaxes_1.default); });
             if (syntaxOID)

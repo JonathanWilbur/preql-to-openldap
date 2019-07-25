@@ -57,7 +57,7 @@ var transpile = function (etcd, logger) { return __awaiter(_this, void 0, void 0
                 _b = (_a = transpilations).concat;
                 return [4 /*yield*/, Promise.all(premables.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
-                            return [2 /*return*/, preamble_1.default(obj, logger)];
+                            return [2 /*return*/, preamble_1.default(obj)];
                         });
                     }); }))];
             case 1:
@@ -81,7 +81,7 @@ var transpile = function (etcd, logger) { return __awaiter(_this, void 0, void 0
                 _f = (_e = transpilations).concat;
                 return [4 /*yield*/, Promise.all(plainIndexes.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
-                            return [2 /*return*/, plainindex_1.default(obj, logger)];
+                            return [2 /*return*/, plainindex_1.default(obj)];
                         });
                     }); }))];
             case 5:
@@ -105,7 +105,7 @@ var transpile = function (etcd, logger) { return __awaiter(_this, void 0, void 0
                 _k = (_j = transpilations).concat;
                 return [4 /*yield*/, Promise.all(postambles.map(function (obj) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
-                            return [2 /*return*/, postamble_1.default(obj, logger)];
+                            return [2 /*return*/, postamble_1.default(obj)];
                         });
                     }); }))];
             case 9:

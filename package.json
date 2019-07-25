@@ -12,10 +12,10 @@
   "author": "Jonathan M. Wilbur <jonathan@wilbur.space>",
   "license": "MIT",
   "dependencies": {
-    "preql-core": "^1.0.0-g"
+    "preql-core": "^1.0.0-r"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.28",
-    "serverless": "^1.47.0"
+    "@types/aws-lambda": "^8.10.31",
+    "serverless": "^1.48.4"
   }
 }

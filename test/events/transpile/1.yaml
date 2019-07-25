@@ -191,6 +191,7 @@ objects:
       distinguishedName: lastName=Wilbur,dc=wilbur,dc=space
       databaseName: floofy
       structName: persona
+      id: 1
       values:
         firstName: Jonathan
         lastName: Wilbur

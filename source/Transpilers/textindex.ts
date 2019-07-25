@@ -1,10 +1,10 @@
-import { APIObject, TextIndexSpec, SuggestedTargetObjectHandler } from 'preql-core';
+import { APIObject, TextIndexSpec } from 'preql-core';
 // Index example:
 // dn: olcDatabase={1}mdb,cn=config
 // changetype: modify
 // add: olcDbIndex
 // olcDbIndex: cn,sn,uid eq
-const transpileTextIndex: SuggestedTargetObjectHandler = async (obj: APIObject<TextIndexSpec>): Promise<string> => {
+const transpileTextIndex = async (obj: APIObject<TextIndexSpec>): Promise<string> => {
     return (
         '# Replace __OLC_DATABASE__ below and uncomment.\r\n'
         + `dn: olcDatabase=__OLC_DATABASE__,cn=config\r\n`
