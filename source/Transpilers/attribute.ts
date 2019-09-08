@@ -15,44 +15,17 @@ const transpileAttribute = async (obj: APIObject<AttributeSpec>, logger: Logger,
         throw new Error(`No data type named '${obj.spec.type}'.`);
     }
 
-    const ldapSyntax: Syntax = ((): Syntax => {
-        /**
-         * Even though the switch statement below will ensure that all Enums
-         * become DirectoryString types, it would be possible to change the
-         * type by specifying a different syntaxOID. Putting this first
-         * circumvents this issue by ignoring `syntaxObjectIdentifiers` if
-         * the data type is an Enum.
-         */
-        if (dataType.spec.values) return syntaxes['1.3.6.1.4.1.1466.115.121.1.15']; // DirectoryString
-        let syntaxOID: string | undefined = (dataType.spec.syntaxObjectIdentifiers || [])
-            .find((oid: string): boolean => (oid in syntaxes));
-        if (syntaxOID) return syntaxes[syntaxOID];
-        switch (dataType.spec.jsonEquivalent) {
-            case ('boolean'): return syntaxes['1.3.6.1.4.1.1466.115.121.1.7']; // BOOLEAN
-            case ('integer'): return syntaxes['1.3.6.1.4.1.1466.115.121.1.27']; // INTEGER
-            /**
-             * Unfortunately, OpenLDAP does not seem to support the ASN.1 REAL
-             * type for whatever reason, so we have to use a string type to
-             * represent numbers that can be non-integral, such as:
-             * - 123
-             * - 1.23
-             * - 1.23 * 10^-1
-             * - 1.23E-1
-             * - +4.56
-             * - Infinity
-             * - -Infinity
-             * - NaN
-             * - 5 + 3i
-             * - PI
-             * - 5 / 3
-             */
-            case ('number'): return syntaxes['1.3.6.1.4.1.1466.115.121.1.44']; // PrintableString
-            case ('string'): return syntaxes['1.3.6.1.4.1.1466.115.121.1.15']; // DirectoryString
-            default: {
-                throw new Error(`No 'ldapSyntax' label for DataType '${dataType.metadata.name}'.`);
-            }
+    let syntaxOID: string | undefined;
+    if (dataType.spec.values) {
+        syntaxOID = '1.3.6.1.4.1.1466.115.121.1.15';
+    } else {
+        if (!dataType.spec.targets.openldap) {
+            throw new Error(`No OpenLDAP nativeType defined for DataType '${dataType.metadata.name}'.`);
         }
-    })();
+        syntaxOID = dataType.spec.targets.openldap.nativeType;
+        // TODO: Check that it is a valid OID.
+    }
+    const ldapSyntax: Syntax = syntaxes[syntaxOID];
 
     if (!obj.spec.objectIdentifier) {
         throw new Error(`No 'objectIdentifier' label for Attribute '${obj.metadata.name}'.`);
@@ -98,15 +71,7 @@ const transpileAttribute = async (obj: APIObject<AttributeSpec>, logger: Logger,
         }
     }
 
-    const chosenSyntaxOID: string | undefined = (dataType.spec.syntaxObjectIdentifiers || [])
-        .find((oid: string): boolean => (oid in syntaxes));
-    if (!chosenSyntaxOID) {
-        throw new Error(
-            'No acceptable syntax object identifier found for Attribute '
-            + `'${obj.metadata.name}', having type '${obj.spec.type}'.`
-        );
-    }
-    ret += ` SYNTAX ${chosenSyntaxOID}`;
+    ret += ` SYNTAX ${syntaxOID}`;
     ret += obj.spec.length ? `{${obj.spec.length}}` : '';
     if (!obj.spec.multiValued) {
         ret += ' SINGLE-VALUE';

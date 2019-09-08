@@ -45,7 +45,7 @@ var substringRules_1 = __importDefault(require("../substringRules"));
 var syntaxes_1 = __importDefault(require("../syntaxes"));
 var prohibitedIdentifiers_1 = __importDefault(require("../prohibitedIdentifiers"));
 var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, void 0, void 0, function () {
-    var dataType, ldapSyntax, ret, comment, matchingRule, defaultMatchingRule, orderingRule, defaultOrderingRule, substringRule, defaultSubstringRule, chosenSyntaxOID;
+    var dataType, syntaxOID, ldapSyntax, ret, comment, matchingRule, defaultMatchingRule, orderingRule, defaultOrderingRule, substringRule, defaultSubstringRule;
     return __generator(this, function (_a) {
         if (prohibitedIdentifiers_1.default.indexOf(obj.spec.name) !== -1) {
             throw new Error("Attribute name '" + obj.spec.name + "' is prohibited.");
@@ -54,46 +54,17 @@ var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, 
         if (!dataType) {
             throw new Error("No data type named '" + obj.spec.type + "'.");
         }
-        ldapSyntax = (function () {
-            /**
-             * Even though the switch statement below will ensure that all Enums
-             * become DirectoryString types, it would be possible to change the
-             * type by specifying a different syntaxOID. Putting this first
-             * circumvents this issue by ignoring `syntaxObjectIdentifiers` if
-             * the data type is an Enum.
-             */
-            if (dataType.spec.values)
-                return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.15']; // DirectoryString
-            var syntaxOID = (dataType.spec.syntaxObjectIdentifiers || [])
-                .find(function (oid) { return (oid in syntaxes_1.default); });
-            if (syntaxOID)
-                return syntaxes_1.default[syntaxOID];
-            switch (dataType.spec.jsonEquivalent) {
-                case ('boolean'): return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.7']; // BOOLEAN
-                case ('integer'): return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.27']; // INTEGER
-                /**
-                 * Unfortunately, OpenLDAP does not seem to support the ASN.1 REAL
-                 * type for whatever reason, so we have to use a string type to
-                 * represent numbers that can be non-integral, such as:
-                 * - 123
-                 * - 1.23
-                 * - 1.23 * 10^-1
-                 * - 1.23E-1
-                 * - +4.56
-                 * - Infinity
-                 * - -Infinity
-                 * - NaN
-                 * - 5 + 3i
-                 * - PI
-                 * - 5 / 3
-                 */
-                case ('number'): return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.44']; // PrintableString
-                case ('string'): return syntaxes_1.default['1.3.6.1.4.1.1466.115.121.1.15']; // DirectoryString
-                default: {
-                    throw new Error("No 'ldapSyntax' label for DataType '" + dataType.metadata.name + "'.");
-                }
+        if (dataType.spec.values) {
+            syntaxOID = '1.3.6.1.4.1.1466.115.121.1.15';
+        }
+        else {
+            if (!dataType.spec.targets.openldap) {
+                throw new Error("No OpenLDAP nativeType defined for DataType '" + dataType.metadata.name + "'.");
             }
-        })();
+            syntaxOID = dataType.spec.targets.openldap.nativeType;
+            // TODO: Check that it is a valid OID.
+        }
+        ldapSyntax = syntaxes_1.default[syntaxOID];
         if (!obj.spec.objectIdentifier) {
             throw new Error("No 'objectIdentifier' label for Attribute '" + obj.metadata.name + "'.");
         }
@@ -135,13 +106,7 @@ var transpileAttribute = function (obj, logger, etcd) { return __awaiter(_this, 
                 ret += " SUBSTR " + defaultSubstringRule;
             }
         }
-        chosenSyntaxOID = (dataType.spec.syntaxObjectIdentifiers || [])
-            .find(function (oid) { return (oid in syntaxes_1.default); });
-        if (!chosenSyntaxOID) {
-            throw new Error('No acceptable syntax object identifier found for Attribute '
-                + ("'" + obj.metadata.name + "', having type '" + obj.spec.type + "'."));
-        }
-        ret += " SYNTAX " + chosenSyntaxOID;
+        ret += " SYNTAX " + syntaxOID;
         ret += obj.spec.length ? "{" + obj.spec.length + "}" : '';
         if (!obj.spec.multiValued) {
             ret += ' SINGLE-VALUE';
