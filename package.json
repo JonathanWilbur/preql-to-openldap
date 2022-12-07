@@ -16,6 +16,6 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.31",
-    "serverless": "^1.51.0"
+    "serverless": "^3.25.1"
   }
 }
